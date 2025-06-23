@@ -36,8 +36,9 @@ export default async function DashboardPage() {
   <p>No habits yet. Start by creating one!</p>
 ) : (
   <ul className="space-y-2">
-   {plainHabits.map((habit) => (
-    <HabitItem key={habit._id} habit={{...habit, name: habit.name || ''}} />
+    {/* Change type here for habit */}
+   {plainHabits.map((habit: any) => (
+    <HabitItem key={habit._id} habit={habit} />
     ))}
   </ul>
 )}

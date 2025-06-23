@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function HabitItem({ habit }: { habit: { _id: string, name: string, logs: Array<{ date: string, completed: boolean, note: string }> } }) {
+export default function HabitItem({ habit }: { habit: { _id: string, name: string, logs: Array<{ date: string, completed: boolean, note: string }>, streak: number } }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -56,7 +56,9 @@ export default function HabitItem({ habit }: { habit: { _id: string, name: strin
   return (
     <div className="border p-4 rounded shadow bg-white dark:bg-gray-800">
       <h2 className="text-lg font-semibold">{habit.name}</h2>
-
+      <p className="text-sm text-purple-600 mt-1">
+        🔥 Current Streak: <strong>{habit.streak}</strong> day{habit.streak !== 1 && 's'}
+      </p>
       {isDone ? (
         <>
           <p className="text-green-600 mt-2">✅ Completed today</p>

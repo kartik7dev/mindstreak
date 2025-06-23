@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { calculateStreak } from "@/lib/calculateStreak";
 import { connectToDatabase } from "../lib/mongodb";
 import Habit from "../models/Habit";
 import HabitForm from "../../components/HabitForm";
@@ -18,11 +19,12 @@ export default async function DashboardPage() {
         ...habit,
         _id: (habit._id as { toString(): string }).toString(),
         logs: habit.logs.map((log: any) => ({
-        date: log.date.toISOString(), 
-        completed: log.completed,
-        note: log.note || "",
-        _id: log._id?.toString() || null,
-  }))
+            date: log.date.toISOString(), 
+            completed: log.completed,
+            note: log.note || "",
+            _id: log._id?.toString() || null,
+        })),
+        streak: calculateStreak(habit.logs),
 }));
   return (
     <div className="p-6 space-y-4">

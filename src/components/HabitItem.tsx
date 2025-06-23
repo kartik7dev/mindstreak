@@ -10,6 +10,9 @@ export default function HabitItem({ habit }: { habit: { _id: string, name: strin
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [editNoteText, setEditNoteText] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedName, setEditedName] = useState(habit.name);
+
 
   const todayLog = habit.logs.find((log) => {
     const logDate = new Date(log.date);
@@ -53,6 +56,34 @@ export default function HabitItem({ habit }: { habit: { _id: string, name: strin
     }
   };
 
+  const handleSaveEdit = async () => {
+    try {
+      await fetch(`/api/habits/${habit._id}/edit`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: editedName }),
+      });
+      location.reload();
+    } catch (err) {
+      console.error("Error updating habit:", err);
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirm = window.confirm("Are you sure you want to delete this habit?");
+    if (!confirm) return;
+
+    try {
+      await fetch(`/api/habits/${habit._id}/delete`, {
+        method: "DELETE",
+      });
+      location.reload();
+    } catch (err) {
+      console.error("Error deleting habit:", err);
+    }
+  };
+
+
   function getLastNDays(n = 7) {
     const dates = [];
     const today = new Date();
@@ -70,6 +101,49 @@ export default function HabitItem({ habit }: { habit: { _id: string, name: strin
   return (
     <div className="border p-4 rounded shadow bg-white dark:bg-gray-800">
       <h2 className="text-lg font-semibold">{habit.name}</h2>
+            {isEditing ? (
+        <>
+          <input
+            type="text"
+            value={editedName}
+            onChange={(e) => setEditedName(e.target.value)}
+            className="mt-2 p-2 border rounded w-full"
+          />
+          <div className="flex gap-2 mt-2">
+            <button
+              onClick={handleSaveEdit}
+              className="px-4 py-1 bg-green-600 text-white rounded"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="px-4 py-1 bg-gray-400 text-white rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="flex gap-4 text-sm mt-2">
+          <button
+            onClick={() => {
+              setEditedName(habit.name);
+              setIsEditing(true);
+            }}
+            className="text-blue-600 hover:underline"
+          >
+            ✏️ Edit
+          </button>
+          <button
+            onClick={handleDelete}
+            className="text-red-600 hover:underline"
+          >
+            🗑️ Delete
+          </button>
+        </div>
+      )}
+
       <p className="text-sm text-purple-600 mt-1">
         🔥 Current Streak: <strong>{habit.streak}</strong> day{habit.streak !== 1 && 's'}
       </p>

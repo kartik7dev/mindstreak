@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function HabitItem({ habit }: { habit: { _id: string, name: string, logs: Array<{ date: string, completed: boolean, note: string }>, streak: number } }) {
+export default function HabitItem({ habit }: { habit: { _id: string, name: string, logs: Array<{ date: string, completed: boolean, note: string }>, streak: number, completion: number } }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -227,6 +227,24 @@ export default function HabitItem({ habit }: { habit: { _id: string, name: strin
           );
         })}
       </div>
+
+    <p className="text-sm mt-2 text-blue-600">
+      📈 7-Day Completion: <strong>{habit.completion}%</strong>
+    </p>
+    <div className="w-full bg-gray-200 h-2 rounded overflow-hidden mt-1">
+      <div
+        className="h-full bg-blue-500"
+        style={{ width: `${habit.completion}%` }}
+      ></div>
+    </div>
+
+    {habit.completion >= 80 && (
+        <span className="inline-block mt-1 px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">
+          ✅ Great Consistency!
+        </span>
+    )}
+
+
 
     </div>
   );

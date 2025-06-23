@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongodb';
 import Habit from '@/app/models/Habit';
 
-export async function PATCH(req, { params }) {
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   try {
     const habitId = params.id;
     const { note } = await req.json();
@@ -20,7 +20,7 @@ export async function PATCH(req, { params }) {
     today.setHours(0, 0, 0, 0);
 
     // Check if a log exists for today
-    const existingLog = habit.logs.find((log) => {
+    const existingLog = habit.logs.find((log: { date: Date }) => {
       const logDate = new Date(log.date);
       logDate.setHours(0, 0, 0, 0);
       return logDate.getTime() === today.getTime();

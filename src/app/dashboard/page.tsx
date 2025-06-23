@@ -37,7 +37,7 @@ export default async function DashboardPage() {
 ) : (
   <ul className="space-y-2">
    {plainHabits.map((habit) => (
-    <HabitItem key={habit._id} habit={habit} />
+    <HabitItem key={habit._id} habit={{...habit, name: habit.name || ''}} />
     ))}
   </ul>
 )}

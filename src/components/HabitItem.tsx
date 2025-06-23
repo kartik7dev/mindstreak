@@ -53,6 +53,20 @@ export default function HabitItem({ habit }: { habit: { _id: string, name: strin
     }
   };
 
+  function getLastNDays(n = 7) {
+    const dates = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = n - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      dates.push(d);
+    }
+    return dates;
+  }
+
+
   return (
     <div className="border p-4 rounded shadow bg-white dark:bg-gray-800">
       <h2 className="text-lg font-semibold">{habit.name}</h2>
@@ -114,6 +128,32 @@ export default function HabitItem({ habit }: { habit: { _id: string, name: strin
           </button>
         </>
       )}
+
+      <div className="flex items-center gap-2 mt-4">
+        {getLastNDays(7).map((day) => {
+          const log = habit.logs.find((log) => {
+            const logDate = new Date(log.date);
+            logDate.setHours(0, 0, 0, 0);
+            return logDate.getTime() === day.getTime();
+          });
+
+          const isDone = log?.completed;
+          const note = log?.note;
+
+          return (
+            <div
+              key={day.toISOString()}
+              className={`w-8 h-8 rounded-full text-sm flex items-center justify-center border
+                ${isDone ? "bg-green-500 text-white" : "bg-gray-300 text-gray-600"}
+              `}
+              title={note || day.toDateString()}
+            >
+              {day.getDate()}
+            </div>
+          );
+        })}
+      </div>
+
     </div>
   );
 }
